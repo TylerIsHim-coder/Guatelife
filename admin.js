@@ -59,22 +59,35 @@
 
   /* ============================================================
      MENTOR STORAGE
+     Firestore-backed: content/mentors → { list: [...] }
   ============================================================ */
 
-  function loadAllMentors() {
+  let mentorsCache = null;
+
+  async function loadMentorsFromFirestore() {
     try {
-      const raw = localStorage.getItem(ALL_MENTORS_KEY);
-      if (raw) return JSON.parse(raw);
-      /* First visit — seed defaults */
-      localStorage.setItem(ALL_MENTORS_KEY, JSON.stringify(DEFAULT_MENTORS));
-      return DEFAULT_MENTORS.map((m) => Object.assign({}, m));
-    } catch {
-      return DEFAULT_MENTORS.map((m) => Object.assign({}, m));
+      const docRef = window.GuateLifeDb.collection('content').doc('mentors');
+      const snap = await docRef.get();
+      if (snap.exists && Array.isArray(snap.data().list)) {
+        mentorsCache = snap.data().list;
+      } else {
+        /* First visit — seed defaults */
+        mentorsCache = DEFAULT_MENTORS.map((m) => Object.assign({}, m));
+        await docRef.set({ list: mentorsCache });
+      }
+    } catch (err) {
+      console.error('GuateLife: failed to load mentors from Firestore', err);
+      mentorsCache = DEFAULT_MENTORS.map((m) => Object.assign({}, m));
     }
   }
 
+  function loadAllMentors() {
+    return mentorsCache || DEFAULT_MENTORS.map((m) => Object.assign({}, m));
+  }
+
   function saveAllMentors(list) {
-    localStorage.setItem(ALL_MENTORS_KEY, JSON.stringify(list));
+    mentorsCache = list;
+    return window.GuateLifeDb.collection('content').doc('mentors').set({ list });
   }
 
   function getMentorsGrid() {
@@ -183,7 +196,9 @@
         const list   = loadAllMentors();
         if (list[idx]) {
           list[idx][field] = newVal;
-          saveAllMentors(list);
+          saveAllMentors(list).catch((err) => {
+            console.error('GuateLife: failed to save mentor edit', err);
+          });
         }
       });
     });
@@ -206,7 +221,10 @@
       const name = list[idx] ? list[idx].name : 'this mentor';
       if (!confirm(`Remove ${name}?`)) return;
       list.splice(idx, 1);
-      saveAllMentors(list);
+      saveAllMentors(list).catch((err) => {
+        console.error('GuateLife: failed to delete mentor', err);
+        alert('Failed to delete — check your connection and try again.');
+      });
       refreshAllMentors();
     });
     card.appendChild(del);
@@ -361,10 +379,15 @@
 
       const list = loadAllMentors();
       list.push({ id, name, title, bio, photo });
-      saveAllMentors(list);
-
-      overlay.remove();
-      refreshAllMentors();
+      saveAllMentors(list)
+        .then(() => {
+          overlay.remove();
+          refreshAllMentors();
+        })
+        .catch((err) => {
+          console.error('GuateLife: failed to save new mentor', err);
+          errorEl.textContent = 'Failed to save — check your connection and try again.';
+        });
     };
 
     overlay.querySelector('#amf-save').addEventListener('click', save);
@@ -624,25 +647,11 @@
      INIT
   ============================================================ */
 
-  /* Migrate mentors added under the old storage key (guatelife-custom-mentors) */
-  function migrateOldMentors() {
-    if (localStorage.getItem(ALL_MENTORS_KEY)) return;
-    try {
-      const old = localStorage.getItem('guatelife-custom-mentors');
-      if (old) {
-        const oldList = JSON.parse(old);
-        const merged = DEFAULT_MENTORS.map((m) => Object.assign({}, m)).concat(oldList);
-        localStorage.setItem(ALL_MENTORS_KEY, JSON.stringify(merged));
-        localStorage.removeItem('guatelife-custom-mentors');
-      }
-    } catch { /* ignore */ }
-  }
-
   async function init() {
     createAdminButton();
 
-    /* Load saved text overrides from Firestore (i18n has already run before this script) */
-    await loadOverridesFromFirestore();
+    /* Load saved text overrides and mentors from Firestore (i18n has already run before this script) */
+    await Promise.all([loadOverridesFromFirestore(), loadMentorsFromFirestore()]);
     applyOverrides();
 
     /* On the About page: hide the hardcoded HTML mentor cards and render from storage */
