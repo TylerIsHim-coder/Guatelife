@@ -1,6 +1,6 @@
 /* ============================================================
    GuateLife — Admin inline editor + mentor manager
-   Password-protected, persists all changes to localStorage.
+   Password-protected, persists all changes to Firestore.
    ============================================================ */
 (function () {
   'use strict';
@@ -17,6 +17,36 @@
   ];
 
   let isEditMode = false;
+
+  /* ============================================================
+     PENDING SAVE TRACKING
+     This is a multi-page site, not an SPA — navigating to another
+     page mid-save kills the in-flight Firestore write with no error.
+     Block that navigation until saves finish, and show progress.
+  ============================================================ */
+
+  let pendingSaveCount = 0;
+
+  function trackSave(promise) {
+    pendingSaveCount++;
+    updateSaveStatus();
+    return promise.finally(() => {
+      pendingSaveCount--;
+      updateSaveStatus();
+    });
+  }
+
+  function updateSaveStatus() {
+    const status = document.getElementById('admin-save-status');
+    if (status) status.textContent = pendingSaveCount > 0 ? 'Saving…' : 'All changes saved';
+  }
+
+  function handleBeforeUnload(e) {
+    if (pendingSaveCount > 0) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  }
 
   /* ============================================================
      TEXT OVERRIDE HELPERS
@@ -43,7 +73,7 @@
     if (!overridesCache) overridesCache = {};
     if (!overridesCache[lang]) overridesCache[lang] = {};
     overridesCache[lang][key] = value;
-    return window.GuateLifeDb.collection('content').doc('overrides').set(overridesCache);
+    return trackSave(window.GuateLifeDb.collection('content').doc('overrides').set(overridesCache));
   }
 
   function applyOverrides() {
@@ -87,7 +117,7 @@
 
   function saveAllMentors(list) {
     mentorsCache = list;
-    return window.GuateLifeDb.collection('content').doc('mentors').set({ list });
+    return trackSave(window.GuateLifeDb.collection('content').doc('mentors').set({ list }));
   }
 
   function getMentorsGrid() {
@@ -597,6 +627,7 @@
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#a6c56b;flex-shrink:0;"></span>
         <span style="color:rgba(255,255,255,0.85);font-size:13px;">Edit mode — click any highlighted text to change it. Changes save automatically.</span>
+        <span id="admin-save-status" style="color:rgba(166,197,107,0.85);font-size:11px;"></span>
       </div>
       <div style="display:flex;gap:8px;flex-shrink:0;">
         ${pushBtnHtml}
@@ -650,6 +681,7 @@
     if (btn) { btn.innerHTML = unlockIcon(); btn.style.opacity = '1'; }
 
     createToolbar();
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     const lang = window.GuateLifeI18n ? window.GuateLifeI18n.getLanguage() : 'en';
 
@@ -686,6 +718,7 @@
   function exitEditMode() {
     isEditMode = false;
     sessionStorage.removeItem(SESSION_KEY);
+    window.removeEventListener('beforeunload', handleBeforeUnload);
 
     const toolbar = document.getElementById('admin-edit-toolbar');
     if (toolbar) toolbar.remove();
