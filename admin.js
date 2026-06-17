@@ -532,6 +532,49 @@
   }
 
   /* ============================================================
+     LOCAL → CLOUD MIGRATION (one-time)
+  ============================================================ */
+
+  function hasLegacyLocalData() {
+    return !!(localStorage.getItem(OVERRIDES_KEY) || localStorage.getItem(ALL_MENTORS_KEY));
+  }
+
+  async function pushLocalEditsToCloud() {
+    if (!confirm('Push this browser\'s saved edits to the cloud? This will overwrite current cloud content with what\'s stored locally on this device.')) {
+      return;
+    }
+    try {
+      const localOverridesRaw = localStorage.getItem(OVERRIDES_KEY);
+      const localMentorsRaw   = localStorage.getItem(ALL_MENTORS_KEY);
+      const localOverrides    = localOverridesRaw ? JSON.parse(localOverridesRaw) : null;
+      const localMentors      = localMentorsRaw ? JSON.parse(localMentorsRaw) : null;
+
+      if (localOverrides) {
+        await window.GuateLifeDb.collection('content').doc('overrides').set(localOverrides);
+        overridesCache = localOverrides;
+      }
+      if (localMentors) {
+        await window.GuateLifeDb.collection('content').doc('mentors').set({ list: localMentors });
+        mentorsCache = localMentors;
+      }
+
+      localStorage.removeItem(OVERRIDES_KEY);
+      localStorage.removeItem(ALL_MENTORS_KEY);
+
+      applyOverrides();
+      refreshAllMentors();
+
+      const btn = document.getElementById('admin-push-local-btn');
+      if (btn) btn.remove();
+
+      alert('Local edits pushed to the cloud.');
+    } catch (err) {
+      console.error('GuateLife: failed to push local edits to Firestore', err);
+      alert('Failed to push local edits — check your connection and try again.');
+    }
+  }
+
+  /* ============================================================
      TOOLBAR
   ============================================================ */
 
@@ -547,12 +590,16 @@
       border-bottom:1px solid rgba(255,255,255,0.07);
       font-family:Inter,system-ui,sans-serif;
     `;
+    const pushBtnHtml = hasLegacyLocalData()
+      ? `<button id="admin-push-local-btn" style="padding:6px 14px;border:1px solid rgba(166,197,107,0.4);border-radius:8px;background:rgba(166,197,107,0.12);color:#a6c56b;cursor:pointer;font-size:12px;font-family:inherit;">Push local edits to cloud</button>`
+      : '';
     bar.innerHTML = `
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#a6c56b;flex-shrink:0;"></span>
         <span style="color:rgba(255,255,255,0.85);font-size:13px;">Edit mode — click any highlighted text to change it. Changes save automatically.</span>
       </div>
       <div style="display:flex;gap:8px;flex-shrink:0;">
+        ${pushBtnHtml}
         <button id="admin-reset-btn" style="padding:6px 14px;border:1px solid rgba(255,255,255,0.12);border-radius:8px;background:transparent;color:rgba(255,255,255,0.5);cursor:pointer;font-size:12px;font-family:inherit;">Reset all to defaults</button>
         <button id="admin-exit-btn"  style="padding:6px 14px;border:1px solid rgba(255,255,255,0.15);border-radius:8px;background:rgba(255,255,255,0.07);color:#fff;cursor:pointer;font-size:12px;font-family:inherit;">Exit editing</button>
       </div>
@@ -560,6 +607,8 @@
     document.body.appendChild(bar);
 
     bar.querySelector('#admin-exit-btn').addEventListener('click', exitEditMode);
+    const pushBtn = bar.querySelector('#admin-push-local-btn');
+    if (pushBtn) pushBtn.addEventListener('click', pushLocalEditsToCloud);
     bar.querySelector('#admin-reset-btn').addEventListener('click', () => {
       if (confirm('Reset all edits (text and mentors) back to defaults? This cannot be undone.')) {
         localStorage.removeItem(OVERRIDES_KEY);
