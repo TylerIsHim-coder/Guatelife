@@ -259,6 +259,41 @@
   }
 
   /* ============================================================
+     IMAGE HELPERS
+  ============================================================ */
+
+  /* Resizes/compresses an uploaded image client-side so a handful of
+     mentor photos comfortably fit under Firestore's 1 MiB document cap. */
+  function resizeImageFile(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(reader.error);
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Could not read image file'));
+        img.onload = () => {
+          let width  = img.width;
+          let height = img.height;
+          if (width > height && width > maxDim) {
+            height = Math.round((height * maxDim) / width);
+            width  = maxDim;
+          } else if (height >= width && height > maxDim) {
+            width  = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width  = width;
+          canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ============================================================
      ADD MENTOR MODAL
   ============================================================ */
 
@@ -348,13 +383,16 @@
       if (!file) return;
       fileNameEl.textContent = file.name;
       urlInput.value = '';
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        base64Photo = e.target.result;
-        previewImg.src = base64Photo;
-        previewWrap.style.display = 'block';
-      };
-      reader.readAsDataURL(file);
+      resizeImageFile(file, 480, 0.8)
+        .then((dataUrl) => {
+          base64Photo = dataUrl;
+          previewImg.src = base64Photo;
+          previewWrap.style.display = 'block';
+        })
+        .catch((err) => {
+          console.error('GuateLife: failed to process uploaded photo', err);
+          errorEl.textContent = 'Could not process that image — try a different file.';
+        });
     });
 
     urlInput.addEventListener('input', () => {
