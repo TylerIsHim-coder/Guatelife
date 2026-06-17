@@ -10,7 +10,7 @@
 
   const SUBJECT_OPTIONS = [
     { id: 'math', label: { en: 'Math', es: 'Matemáticas' } },
-    { id: 'language', label: { en: 'Language', es: 'Idiomas' } },
+    { id: 'english', label: { en: 'English', es: 'Inglés' } },
     { id: 'reading', label: { en: 'Reading', es: 'Lectura' } },
     { id: 'writing', label: { en: 'Writing', es: 'Escritura' } },
     { id: 'science', label: { en: 'Science', es: 'Ciencias' } },
