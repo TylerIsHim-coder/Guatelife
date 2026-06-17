@@ -610,11 +610,16 @@
     const pushBtn = bar.querySelector('#admin-push-local-btn');
     if (pushBtn) pushBtn.addEventListener('click', pushLocalEditsToCloud);
     bar.querySelector('#admin-reset-btn').addEventListener('click', () => {
-      if (confirm('Reset all edits (text and mentors) back to defaults? This cannot be undone.')) {
-        localStorage.removeItem(OVERRIDES_KEY);
-        localStorage.removeItem(ALL_MENTORS_KEY);
-        location.reload();
-      }
+      if (!confirm('Reset all edits (text and mentors) back to defaults? This cannot be undone.')) return;
+      Promise.all([
+        window.GuateLifeDb.collection('content').doc('overrides').set({}),
+        window.GuateLifeDb.collection('content').doc('mentors').set({ list: DEFAULT_MENTORS.map((m) => Object.assign({}, m)) }),
+      ])
+        .then(() => location.reload())
+        .catch((err) => {
+          console.error('GuateLife: failed to reset content', err);
+          alert('Failed to reset — check your connection and try again.');
+        });
     });
   }
 
