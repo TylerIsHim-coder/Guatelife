@@ -224,7 +224,7 @@
 
         const newVal = el.innerText.trim();
         const list   = loadAllMentors();
-        if (list[idx]) {
+        if (list[idx] && list[idx][field] !== newVal) {
           list[idx][field] = newVal;
           saveAllMentors(list).catch((err) => {
             console.error('GuateLife: failed to save mentor edit', err);
@@ -686,11 +686,17 @@
     const lang = window.GuateLifeI18n ? window.GuateLifeI18n.getLanguage() : 'en';
 
     function onFocus(e) {
-      Object.assign(e.currentTarget.style, { outline: '2px solid #A6C56B', background: 'rgba(166,197,107,0.07)' });
+      const el = e.currentTarget;
+      el.dataset.adminPreEditValue = el.innerHTML;
+      Object.assign(el.style, { outline: '2px solid #A6C56B', background: 'rgba(166,197,107,0.07)' });
     }
     function onBlur(e) {
       const el = e.currentTarget;
       Object.assign(el.style, { outline: '2px dashed rgba(166,197,107,0.45)', background: '' });
+      /* Only persist an override if the content actually changed — merely
+         clicking into a field and out again must not freeze it against
+         future updates to the source text. */
+      if (el.innerHTML === el.dataset.adminPreEditValue) return;
       saveOverride(lang, el.dataset.adminKey, el.innerHTML).catch((err) => {
         console.error('GuateLife: failed to save text edit', err);
         flashSaveError(el);
