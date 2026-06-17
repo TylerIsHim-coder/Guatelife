@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — GuateLife</title>
+  <meta name="description" content="GuateLife pairs students in Guatemala with world-class mentors and learning resources — transforming futures through mentorship. Learn our story and impact." />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <meta property="og:title" content="About — GuateLife" />
+  <meta property="og:description" content="Our story, mission, and the impact we're building together." />
+  <meta property="og:image" content="assets/hero.jpg" />
+  <meta name="theme-color" content="#0B0F14" />
+
+  <!-- Fonts: Cormorant Garamond (editorial serif) + Inter (UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue: '#8FB1D6',
+              green: '#A6C56B',
+              blueDeep: '#5E80AC',
+              greenDeep: '#7CA24E',
+            },
+            ink: '#0F172A',
+            muted: '#475569',
+            cream: '#F6F4EC',
+            night: '#0B0F14',
+            slatey: '#11161D',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          maxWidth: { content: '1200px' },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-cream font-sans text-ink antialiased">
+
+  <!-- Scroll progress bar -->
+  <div id="progress" class="fixed top-0 left-0 z-[60] h-[2px] w-0 bg-gradient-to-r from-brand-blue to-brand-green"></div>
+
+  <!-- ============ NAV ============ -->
+  <header id="nav" class="fixed inset-x-0 top-0 z-50 px-4 pt-4 transition-all duration-500">
+    <nav class="mx-auto flex max-w-content items-center justify-between rounded-full border border-white/15 bg-white/5 px-5 py-3 backdrop-blur-xl transition-all duration-500 md:px-6" id="navPill">
+      <a href="index.html" class="wordmark text-3xl leading-none sm:text-4xl -translate-y-0.5" aria-label="GuateLife home">
+        <span class="g-blue">guate</span><span class="g-green">life</span>
+      </a>
+
+      <div class="hidden items-center gap-8 text-sm text-white/75 md:flex" id="navLinks">
+        <a href="index.html#mission" class="nav-link" data-i18n="nav.mission">Mission</a>
+        <a href="index.html#how" class="nav-link" data-i18n="nav.how">How it works</a>
+        <a href="index.html#paths" class="nav-link" data-i18n="nav.involved">Get involved</a>
+        <a href="about.html" class="nav-link" data-i18n="nav.about">About Us</a>
+        <button type="button" class="lang-toggle nav-link flex items-center gap-1.5" data-i18n-aria="nav.lang" aria-label="Switch language">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" stroke-linecap="round"/></svg>
+          <span class="lang-toggle-code">EN</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="index.html#join" data-onboarding="mentor" class="btn-liquid-glass nav-pill hidden md:inline-block cursor-pointer" data-i18n="btn.becomeMentor">Become a Mentor</a>
+        <button id="navToggle" class="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-white md:hidden cursor-pointer" aria-label="Open menu" aria-expanded="false">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile menu sheet -->
+    <div id="mobileMenu" class="mx-auto mt-2 max-w-content origin-top scale-y-95 overflow-hidden rounded-3xl border border-white/15 bg-night/80 opacity-0 backdrop-blur-xl transition-all duration-300 pointer-events-none md:hidden">
+      <div class="flex flex-col p-2 text-white/85">
+        <a href="index.html#mission" class="rounded-2xl px-4 py-3 hover:bg-white/10" data-i18n="nav.mission">Mission</a>
+        <a href="index.html#how" class="rounded-2xl px-4 py-3 hover:bg-white/10" data-i18n="nav.how">How it works</a>
+        <a href="index.html#paths" class="rounded-2xl px-4 py-3 hover:bg-white/10" data-i18n="nav.involved">Get involved</a>
+        <a href="about.html" class="rounded-2xl px-4 py-3 hover:bg-white/10" data-i18n="nav.about">About Us</a>
+        <button type="button" class="lang-toggle rounded-2xl px-4 py-3 hover:bg-white/10 flex items-center gap-2 text-left" data-i18n-aria="nav.lang" aria-label="Switch language">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" stroke-linecap="round"/></svg>
+          <span class="lang-toggle-code">EN</span>
+        </button>
+        <a href="index.html#join" data-onboarding="mentor" class="mt-1 rounded-2xl bg-white px-4 py-3 font-medium text-ink" data-i18n="btn.becomeMentor">Become a Mentor</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ PAGE HEADER ============ -->
+  <section id="top" class="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden bg-night">
+    <img src="assets/hero.jpg" alt="Cinematic Guatemala highland mountains at golden hour" data-i18n-alt="alt.heroMountains" class="absolute inset-0 h-full w-full scale-105 object-cover opacity-60" />
+    <div class="absolute inset-0 bg-gradient-to-b from-night/50 via-night/30 to-night/85"></div>
+    <div class="hero-vignette absolute inset-0"></div>
+
+    <div class="relative z-10 mx-auto w-full max-w-3xl px-6 pt-20 text-center">
+      <p data-reveal data-delay="0" class="mb-5 text-sm font-medium uppercase tracking-[0.2em] text-brand-green" data-i18n="about.eyebrow">About GuateLife</p>
+      <h1 data-reveal data-delay="120" class="font-serif text-5xl font-medium leading-[1.1] text-white sm:text-6xl md:text-7xl" data-i18n="about.heading">
+        Our story,<br /><span class="italic text-white/80">our mission.</span>
+      </h1>
+      <p data-reveal data-delay="240" class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg" data-i18n="about.subtitle">
+        GuateLife started with a simple belief: a student's future shouldn't depend on
+        their zip code. Here's why we exist, and the difference we're making together.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ OUR STORY ============ -->
+  <section id="story" class="relative overflow-hidden bg-cream py-28 md:py-36">
+    <div class="mx-auto grid max-w-content items-center gap-14 px-6 md:grid-cols-12">
+      <div class="md:col-span-7">
+        <p data-reveal class="mb-5 text-sm font-medium uppercase tracking-[0.2em] text-brand-blueDeep" data-i18n="story.eyebrow">Why we started</p>
+        <h2 data-reveal class="font-serif text-4xl font-medium leading-[1.1] text-ink sm:text-5xl md:text-6xl" data-i18n="mission.heading">
+          Talent is everywhere.<br />
+          <span class="italic text-muted">Opportunity is not.</span>
+        </h2>
+        <p data-reveal class="mt-7 max-w-xl text-lg leading-relaxed text-muted" data-i18n="story.body1">
+          GuateLife was founded by a small group of educators and mentors who kept meeting
+          the same brilliant students — full of curiosity and drive, but cut off from the
+          guidance, resources, and networks that turn potential into a career.
+        </p>
+        <p data-reveal class="mt-5 max-w-xl text-lg leading-relaxed text-muted" data-i18n="story.body2">
+          So we built the bridge ourselves: free 1:1 mentorship, curated learning paths
+          from Khan Academy, and a growing community of partner schools across Guatemala —
+          all designed around one student at a time.
+        </p>
+      </div>
+
+      <!-- Floating glass stat card -->
+      <div class="md:col-span-5">
+        <div data-reveal class="float-card relative rounded-3xl border border-black/5 bg-white/70 p-8 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.25)] backdrop-blur-xl">
+          <div class="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-brand-green/30 blur-2xl"></div>
+          <div class="absolute -bottom-6 -left-6 h-28 w-28 rounded-full bg-brand-blue/30 blur-2xl"></div>
+          <div class="relative">
+            <p class="font-serif text-2xl font-medium text-ink" data-i18n="story.cardHeading">What we believe</p>
+            <hr class="my-6 border-black/5" />
+            <ul class="space-y-4 text-sm text-muted">
+              <li class="flex items-start gap-3"><span class="dot mt-1.5 bg-brand-blue"></span> <span data-i18n="story.belief1">Access, not charity — every student deserves the same starting line.</span></li>
+              <li class="flex items-start gap-3"><span class="dot mt-1.5 bg-brand-green"></span> <span data-i18n="story.belief2">Mentorship works best one relationship at a time.</span></li>
+              <li class="flex items-start gap-3"><span class="dot mt-1.5 bg-brand-blueDeep"></span> <span data-i18n="story.belief3">Students who rise, return — and lift the next generation.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MENTORS ============ -->
+  <section id="mentors" class="relative overflow-hidden border-t border-black/5 bg-cream py-28 md:py-36">
+    <div class="mx-auto max-w-content px-6">
+      <div class="mx-auto mb-16 max-w-2xl text-center">
+        <p data-reveal class="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-brand-blueDeep" data-i18n="mentors.eyebrow">Meet our mentors</p>
+        <h2 data-reveal class="font-serif text-4xl font-medium leading-tight text-ink sm:text-5xl" data-i18n="mentors.heading">The people behind the mentorship.</h2>
+      </div>
+
+      <div data-reveal data-stagger class="grid gap-10 sm:grid-cols-2 justify-items-center max-w-2xl mx-auto">
+        <div class="mentor-card text-center">
+          <div class="mentor-photo mx-auto mb-5 h-32 w-32 rounded-full overflow-hidden">
+            <img src="assets/mentors/brendan.jpeg" alt="Brendan" class="h-full w-full object-cover" />
+          </div>
+          <p class="font-serif text-2xl font-medium text-ink">Brendan</p>
+          <p class="mt-3 text-sm leading-relaxed text-muted">Assistant CEO</p>
+        </div>
+        <div class="mentor-card text-center">
+          <div class="mentor-photo mx-auto mb-5 h-32 w-32 rounded-full overflow-hidden">
+            <img src="assets/mentors/tyler.jpeg" alt="Tyler" class="h-full w-full object-cover" />
+          </div>
+          <p class="font-serif text-2xl font-medium text-ink">Tyler</p>
+          <p class="mt-3 text-sm leading-relaxed text-muted">Guatelife CEO</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ IMPACT ============ -->
+  <section id="impact" class="relative overflow-hidden bg-slatey py-28 text-white md:py-36">
+    <div class="pointer-events-none absolute left-1/2 top-0 h-64 w-[120%] -translate-x-1/2 bg-brand-blue/10 blur-[120px]"></div>
+    <div class="relative mx-auto max-w-content px-6">
+      <div class="mx-auto mb-16 max-w-2xl text-center">
+        <p data-reveal class="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-brand-green" data-i18n="impact.eyebrow">Our impact</p>
+        <h2 data-reveal class="font-serif text-4xl font-medium leading-tight sm:text-5xl" data-i18n="impact.heading">Momentum you can measure.</h2>
+      </div>
+
+      <div data-reveal data-stagger class="grid gap-6 sm:grid-cols-3">
+        <div class="stat-card rounded-3xl border border-white/10 bg-white/[0.04] p-8 text-center backdrop-blur-md">
+          <p class="font-serif text-5xl font-semibold text-white sm:text-6xl"><span class="count" data-target="240" data-suffix="+">0</span></p>
+          <p class="mt-2 text-sm text-white/55" data-i18n="impact.stat1">Students mentored</p>
+        </div>
+        <div class="stat-card rounded-3xl border border-white/10 bg-white/[0.04] p-8 text-center backdrop-blur-md">
+          <p class="font-serif text-5xl font-semibold text-white sm:text-6xl"><span class="count" data-target="5800" data-suffix="+">0</span></p>
+          <p class="mt-2 text-sm text-white/55" data-i18n="impact.stat2">Mentorship hours given</p>
+        </div>
+        <div class="stat-card rounded-3xl border border-white/10 bg-white/[0.04] p-8 text-center backdrop-blur-md">
+          <p class="font-serif text-5xl font-semibold text-white sm:text-6xl"><span class="count" data-target="12" data-suffix="">0</span></p>
+          <p class="mt-2 text-sm text-white/55" data-i18n="impact.stat3">Partner schools</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="relative overflow-hidden bg-night py-32 text-white md:py-44">
+    <img src="assets/hero.jpg" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full scale-105 object-cover opacity-30" />
+    <div class="absolute inset-0 bg-gradient-to-b from-night/70 via-night/60 to-night/90"></div>
+    <div class="hero-vignette absolute inset-0"></div>
+    <div class="relative mx-auto max-w-3xl px-6 text-center">
+      <h2 data-reveal class="font-serif text-5xl font-medium leading-[1.05] sm:text-6xl md:text-7xl" data-i18n="aboutCta.heading">
+        Be part of<br /><span class="italic text-white/90">the next chapter.</span>
+      </h2>
+      <p data-reveal class="mx-auto mt-7 max-w-xl text-lg text-white/70" data-i18n="cta.body">
+        Whether you have an hour to give or a future to build — your next chapter starts here.
+      </p>
+      <div data-reveal class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="index.html#join" data-onboarding="mentor" class="btn-primary cursor-pointer" data-i18n="btn.becomeMentor">Become a Mentor</a>
+        <a href="index.html#apply" data-onboarding="student" class="btn-liquid-glass cursor-pointer" data-i18n="btn.applyStudent">Apply as a Student</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-cream pt-20 pb-10">
+    <div class="mx-auto max-w-content px-6">
+      <div class="grid gap-12 md:grid-cols-12">
+        <div class="md:col-span-5">
+          <a href="index.html" class="wordmark text-3xl"><span class="g-blue">guate</span><span class="g-green">life</span></a>
+          <p class="mt-4 max-w-sm text-muted" data-i18n="footer.tagline">Connecting Guatemala's students to a world of opportunity — one mentor, one future at a time.</p>
+          <div class="mt-6 flex gap-3">
+            <a href="#" aria-label="Instagram" class="social-ico cursor-pointer"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="LinkedIn" class="social-ico cursor-pointer"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 11v6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            <a href="#" aria-label="Email" class="social-ico cursor-pointer"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          </div>
+        </div>
+        <div class="md:col-span-7 grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-ink/50" data-i18n="footer.programHeading">Program</p>
+            <ul class="space-y-3 text-sm text-muted">
+              <li><a href="index.html#how" class="hover:text-ink cursor-pointer" data-i18n="nav.how">How it works</a></li>
+              <li><a href="index.html#paths" class="hover:text-ink cursor-pointer" data-i18n="footer.programMentor">Become a mentor</a></li>
+              <li><a href="index.html#apply" class="hover:text-ink cursor-pointer" data-i18n="footer.programApply">Apply as a student</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-ink/50" data-i18n="footer.orgHeading">Organization</p>
+            <ul class="space-y-3 text-sm text-muted">
+              <li><a href="index.html#mission" class="hover:text-ink cursor-pointer" data-i18n="nav.mission">Mission</a></li>
+              <li><a href="about.html" class="hover:text-ink cursor-pointer" data-i18n="nav.about">About Us</a></li>
+              <li><a href="#" class="hover:text-ink cursor-pointer" data-i18n="footer.partners">Partners</a></li>
+            </ul>
+          </div>
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-widest text-ink/50" data-i18n="footer.connectHeading">Connect</p>
+            <ul class="space-y-3 text-sm text-muted">
+              <li><a href="#" class="hover:text-ink cursor-pointer" data-i18n="footer.contact">Contact</a></li>
+              <li><a href="#" class="hover:text-ink cursor-pointer" data-i18n="footer.donate">Donate</a></li>
+              <li><a href="#" class="hover:text-ink cursor-pointer" data-i18n="footer.newsletter">Newsletter</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <hr class="my-10 border-black/5" />
+      <div class="flex flex-col items-center justify-between gap-3 text-xs text-muted/70 sm:flex-row">
+        <p data-i18n="footer.copyright">© 2026 GuateLife. Supporting students in Guatemala since 2025.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-ink cursor-pointer" data-i18n="footer.privacy">Privacy</a>
+          <a href="#" class="hover:text-ink cursor-pointer" data-i18n="footer.terms">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script src="i18n.js"></script>
+  <script src="onboarding.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
