@@ -20,18 +20,30 @@
 
   /* ============================================================
      TEXT OVERRIDE HELPERS
+     Firestore-backed: content/overrides → { en: {...}, es: {...} }
   ============================================================ */
 
+  let overridesCache = null;
+
+  async function loadOverridesFromFirestore() {
+    try {
+      const snap = await window.GuateLifeDb.collection('content').doc('overrides').get();
+      overridesCache = snap.exists ? snap.data() : {};
+    } catch (err) {
+      console.error('GuateLife: failed to load text overrides from Firestore', err);
+      overridesCache = {};
+    }
+  }
+
   function loadOverrides() {
-    try { return JSON.parse(localStorage.getItem(OVERRIDES_KEY) || '{}'); }
-    catch { return {}; }
+    return overridesCache || {};
   }
 
   function saveOverride(lang, key, value) {
-    const all = loadOverrides();
-    if (!all[lang]) all[lang] = {};
-    all[lang][key] = value;
-    localStorage.setItem(OVERRIDES_KEY, JSON.stringify(all));
+    if (!overridesCache) overridesCache = {};
+    if (!overridesCache[lang]) overridesCache[lang] = {};
+    overridesCache[lang][key] = value;
+    return window.GuateLifeDb.collection('content').doc('overrides').set(overridesCache);
   }
 
   function applyOverrides() {
@@ -626,11 +638,11 @@
     } catch { /* ignore */ }
   }
 
-  function init() {
-    migrateOldMentors();
+  async function init() {
     createAdminButton();
 
-    /* Apply saved text overrides (i18n has already run before this script) */
+    /* Load saved text overrides from Firestore (i18n has already run before this script) */
+    await loadOverridesFromFirestore();
     applyOverrides();
 
     /* On the About page: hide the hardcoded HTML mentor cards and render from storage */
