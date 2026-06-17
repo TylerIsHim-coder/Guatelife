@@ -249,8 +249,9 @@
       if (dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
     });
 
+    const LANG_NAMES = { en: 'English', es: 'Español' };
     document.querySelectorAll('.lang-toggle-code').forEach((el) => {
-      el.textContent = lang.toUpperCase();
+      el.textContent = LANG_NAMES[lang] || lang.toUpperCase();
     });
   }
 

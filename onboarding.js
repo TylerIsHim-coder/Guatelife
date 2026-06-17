@@ -15,7 +15,7 @@
     { id: 'writing', label: { en: 'Writing', es: 'Escritura' } },
     { id: 'science', label: { en: 'Science', es: 'Ciencias' } },
     { id: 'computerSkills', label: { en: 'Computer Skills', es: 'Habilidades informáticas' } },
-    { id: 'collegePrep', label: { en: 'College Prep', es: 'Preparación universitaria' } },
+    { id: 'music', label: { en: 'Music', es: 'Música' } },
   ];
 
   const MEETING_OPTIONS = [
@@ -34,7 +34,7 @@
         {
           id: 'subjects',
           type: 'multiselect',
-          label: { en: 'What areas can you help support?', es: '¿En qué áreas puedes brindar apoyo?' },
+          label: { en: 'In what areas can you provide support?', es: '¿En qué áreas puedes brindar apoyo?' },
           options: SUBJECT_OPTIONS,
         },
         { id: 'languages', type: 'text', label: { en: 'What languages do you speak?', es: '¿Qué idiomas hablas?' }, placeholder: { en: 'e.g. English, Spanish', es: 'Ej. inglés, español' } },
