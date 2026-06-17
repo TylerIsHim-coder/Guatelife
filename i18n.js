@@ -75,8 +75,7 @@
       'about.subtitle': `GuateLife started with a simple belief: a student's future shouldn't depend on their zip code. Here's why we exist, and the difference we're making together.`,
 
       'story.eyebrow': `Why we started`,
-      'story.body1': `GuateLife was founded by a small group of educators and mentors who kept meeting the same brilliant students — full of curiosity and drive, but cut off from the guidance, resources, and networks that turn potential into a career.`,
-      'story.body2': `So we built the bridge ourselves: free 1:1 mentorship, curated learning paths from Khan Academy, and a growing community of partner schools across Guatemala — all designed around one student at a time.`,
+      'story.body1': `Across Guatemala, brilliant students are locked out of their future — not by a lack of ability, but by a lack of access. GuateLife exists to shatter that barrier. We bridge the distance, connecting driven students with the mentors, knowledge, and global networks necessary to turn raw potential into an undeniable reality.`,
       'story.cardHeading': `What we believe`,
       'story.belief1': `Access, not charity — every student deserves the same starting line.`,
       'story.belief2': `Mentorship works best one relationship at a time.`,
@@ -182,8 +181,7 @@
       'about.subtitle': `GuateLife nació de una creencia simple: el futuro de un estudiante no debería depender de su código postal. Esta es la razón de nuestra existencia y la diferencia que estamos logrando juntos.`,
 
       'story.eyebrow': `Por qué empezamos`,
-      'story.body1': `GuateLife fue fundada por un pequeño grupo de educadores y mentores que conocían una y otra vez a los mismos estudiantes brillantes: llenos de curiosidad y determinación, pero sin acceso a la guía, los recursos y las redes que convierten el potencial en una carrera.`,
-      'story.body2': `Así que construimos el puente nosotros mismos: mentoría gratuita 1:1, rutas de aprendizaje seleccionadas de Khan Academy y una comunidad creciente de escuelas asociadas en toda Guatemala, todo diseñado en torno a un estudiante a la vez.`,
+      'story.body1': `En toda Guatemala, estudiantes brillantes se ven excluidos de su futuro, no por falta de capacidad, sino por falta de acceso. GuateLife existe para romper esa barrera. Acortamos la distancia, conectando a estudiantes decididos con los mentores, el conocimiento y las redes globales necesarias para convertir el potencial en bruto en una realidad innegable.`,
       'story.cardHeading': `Lo que creemos`,
       'story.belief1': `Acceso, no caridad: cada estudiante merece el mismo punto de partida.`,
       'story.belief2': `La mentoría funciona mejor una relación a la vez.`,
