@@ -198,6 +198,7 @@
           list[idx][field] = newVal;
           saveAllMentors(list).catch((err) => {
             console.error('GuateLife: failed to save mentor edit', err);
+            flashSaveError(el);
           });
         }
       });
@@ -604,7 +605,10 @@
     function onBlur(e) {
       const el = e.currentTarget;
       Object.assign(el.style, { outline: '2px dashed rgba(166,197,107,0.45)', background: '' });
-      saveOverride(lang, el.dataset.adminKey, el.innerHTML);
+      saveOverride(lang, el.dataset.adminKey, el.innerHTML).catch((err) => {
+        console.error('GuateLife: failed to save text edit', err);
+        flashSaveError(el);
+      });
     }
 
     document.querySelectorAll('[data-i18n]').forEach((el) => {
@@ -675,6 +679,19 @@
     return String(str)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* Briefly flags an editable element red when its Firestore save fails,
+     so a dropped connection doesn't silently discard an edit. */
+  function flashSaveError(el) {
+    const prevOutline = el.style.outline;
+    const prevTitle   = el.title;
+    el.style.outline = '2px solid #ef4444';
+    el.title = 'Save failed — check your connection and try again.';
+    setTimeout(() => {
+      el.style.outline = prevOutline;
+      el.title = prevTitle;
+    }, 2500);
   }
 
   function initials(name) {
