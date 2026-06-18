@@ -351,6 +351,11 @@ body { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; 
   font-size: clamp(1.75rem, 5vw, 3rem);
   color: #fff;
 }
+.onboarding-hint {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.5);
+}
 
 /* Single-line underline input */
 .onboarding-input {

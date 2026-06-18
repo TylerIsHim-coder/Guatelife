@@ -26,12 +26,25 @@
     { id: 'spanish6', label: { en: 'Spanish 6', es: 'Español 6' } },
   ];
 
+  const STUDENT_CAPACITY_OPTIONS = [
+    { id: '1', label: { en: '1 student', es: '1 estudiante' } },
+    { id: '2', label: { en: '2 students', es: '2 estudiantes' } },
+    { id: '3', label: { en: '3 students', es: '3 estudiantes' } },
+    { id: '4plus', label: { en: '4+ students', es: '4 o más estudiantes' } },
+  ];
+
+  const YES_NO_OPTIONS = [
+    { id: 'yes', label: { en: 'Yes', es: 'Sí' } },
+    { id: 'no', label: { en: 'No', es: 'No' } },
+  ];
+
   const MEETING_OPTIONS = [
     { id: 'zoom', label: { en: 'Zoom', es: 'Zoom' } },
     { id: 'googleMeet', label: { en: 'Google Meet', es: 'Google Meet' } },
     { id: 'facetime', label: { en: 'FaceTime', es: 'FaceTime' } },
     { id: 'whatsapp', label: { en: 'WhatsApp', es: 'WhatsApp' } },
-    { id: 'phoneCall', label: { en: 'Phone call', es: 'Llamada telefónica' } },
+    { id: 'instagram', label: { en: 'Instagram', es: 'Instagram' } },
+    { id: 'facebook', label: { en: 'Facebook', es: 'Facebook' } },
   ];
 
   const FLOWS = {
@@ -51,7 +64,13 @@
           label: { en: 'What is the highest level of Spanish you have completed?', es: '¿Cuál es el nivel más alto de español que has completado?' },
           options: SPANISH_LEVEL_OPTIONS,
         },
-        { id: 'availability', type: 'text', label: { en: 'How many hours per week can you commit?', es: '¿Cuántas horas por semana puedes dedicar?' }, placeholder: { en: 'e.g. 1-2 hours', es: 'Ej. 1-2 horas' } },
+        {
+          id: 'availability',
+          type: 'select',
+          label: { en: 'How many students can you mentor each week?', es: '¿A cuántos estudiantes puedes asesorar cada semana?' },
+          hint: { en: 'Each session is 45 minutes.', es: 'Cada sesión dura 45 minutos.' },
+          options: STUDENT_CAPACITY_OPTIONS,
+        },
         { id: 'why', type: 'text', label: { en: 'Why do you want to mentor a student?', es: '¿Por qué quieres ser mentor de un estudiante?' }, placeholder: { en: 'Share a few words', es: 'Comparte algunas palabras' } },
       ],
       doneTitle: { en: "You're in!", es: '¡Listo, ya eres parte!' },
@@ -69,7 +88,8 @@
         {
           id: 'subjects',
           type: 'multiselect',
-          label: { en: 'What do you want to get better at?', es: '¿En qué quieres mejorar?' },
+          label: { en: 'What areas do you need more support in?', es: '¿En qué áreas necesitas más apoyo?' },
+          hint: { en: 'Check all that apply.', es: 'Marca todas las que correspondan.' },
           options: SUBJECT_OPTIONS,
         },
         {
@@ -78,7 +98,12 @@
           label: { en: 'How would you prefer to meet with your mentor?', es: '¿Cómo prefieres reunirte con tu mentor?' },
           options: MEETING_OPTIONS,
         },
-        { id: 'goals', type: 'text', label: { en: 'What are you hoping to get out of this program?', es: '¿Qué esperas obtener de este programa?' }, placeholder: { en: 'Share a few words', es: 'Comparte algunas palabras' } },
+        {
+          id: 'weeklyCommitment',
+          type: 'select',
+          label: { en: 'Are you able to meet with your mentor for 45 minutes each week?', es: '¿Puedes reunirte con tu mentor durante 45 minutos cada semana?' },
+          options: YES_NO_OPTIONS,
+        },
       ],
       doneTitle: { en: 'Thanks for applying!', es: '¡Gracias por postularte!' },
       doneMessage: {
@@ -202,6 +227,13 @@
 
       content.appendChild(eyebrow);
       content.appendChild(question);
+
+      if (q.hint) {
+        const hint = document.createElement('p');
+        hint.className = 'onboarding-hint';
+        hint.textContent = q.hint[lang];
+        content.appendChild(hint);
+      }
 
       let focusTarget;
 
