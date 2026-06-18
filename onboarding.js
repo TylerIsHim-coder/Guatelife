@@ -18,6 +18,14 @@
     { id: 'music', label: { en: 'Music', es: 'Música' } },
   ];
 
+  const SPANISH_LEVEL_OPTIONS = [
+    { id: 'level2', label: { en: 'Level 2', es: 'Nivel 2' } },
+    { id: 'level3', label: { en: 'Level 3', es: 'Nivel 3' } },
+    { id: 'level4', label: { en: 'Level 4', es: 'Nivel 4' } },
+    { id: 'apSpanish', label: { en: 'AP Spanish', es: 'Español AP' } },
+    { id: 'spanish6', label: { en: 'Spanish 6', es: 'Español 6' } },
+  ];
+
   const MEETING_OPTIONS = [
     { id: 'zoom', label: { en: 'Zoom', es: 'Zoom' } },
     { id: 'googleMeet', label: { en: 'Google Meet', es: 'Google Meet' } },
@@ -37,7 +45,12 @@
           label: { en: 'In what areas can you provide support?', es: '¿En qué áreas puedes brindar apoyo?' },
           options: SUBJECT_OPTIONS,
         },
-        { id: 'languages', type: 'text', label: { en: 'What languages do you speak?', es: '¿Qué idiomas hablas?' }, placeholder: { en: 'e.g. English, Spanish', es: 'Ej. inglés, español' } },
+        {
+          id: 'spanishLevel',
+          type: 'select',
+          label: { en: 'What is the highest level of Spanish you have completed?', es: '¿Cuál es el nivel más alto de español que has completado?' },
+          options: SPANISH_LEVEL_OPTIONS,
+        },
         { id: 'availability', type: 'text', label: { en: 'How many hours per week can you commit?', es: '¿Cuántas horas por semana puedes dedicar?' }, placeholder: { en: 'e.g. 1-2 hours', es: 'Ej. 1-2 horas' } },
         { id: 'why', type: 'text', label: { en: 'Why do you want to mentor a student?', es: '¿Por qué quieres ser mentor de un estudiante?' }, placeholder: { en: 'Share a few words', es: 'Comparte algunas palabras' } },
       ],
@@ -218,6 +231,31 @@
 
         content.appendChild(optionsWrap);
         focusTarget = optionsWrap.querySelector('button');
+      } else if (q.type === 'select') {
+        const optionsWrap = document.createElement('div');
+        optionsWrap.className = 'onboarding-options';
+
+        q.options.forEach((opt) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'onboarding-option' + (answers[q.id] === opt.id ? ' selected' : '');
+          btn.textContent = opt.label[lang];
+          btn.setAttribute('aria-pressed', answers[q.id] === opt.id ? 'true' : 'false');
+          btn.addEventListener('click', () => {
+            answers[q.id] = opt.id;
+            optionsWrap.querySelectorAll('.onboarding-option').forEach((b) => {
+              b.classList.remove('selected');
+              b.setAttribute('aria-pressed', 'false');
+            });
+            btn.classList.add('selected');
+            btn.setAttribute('aria-pressed', 'true');
+            error.classList.remove('visible');
+          });
+          optionsWrap.appendChild(btn);
+        });
+
+        content.appendChild(optionsWrap);
+        focusTarget = optionsWrap.querySelector('button');
       } else {
         const input = document.createElement('input');
         input.className = 'onboarding-input';
@@ -342,6 +380,9 @@
     if (q.type === 'multiselect') {
       return value.length ? '' : i18n.t('wizard.common.required');
     }
+    if (q.type === 'select') {
+      return value ? '' : i18n.t('wizard.common.required');
+    }
     const trimmed = value.trim();
     if (!trimmed) return i18n.t('wizard.common.required');
     if (q.type === 'email' && !EMAIL_RE.test(trimmed)) return i18n.t('wizard.common.invalidEmail');
@@ -351,17 +392,18 @@
   function goNext(input, errorEl) {
     const flow = getFlow();
     const q = flow.questions[currentStep];
-    const value = q.type === 'multiselect' ? (answers[q.id] || []) : input.value;
+    const isChoice = q.type === 'multiselect' || q.type === 'select';
+    const value = isChoice ? (answers[q.id] || (q.type === 'multiselect' ? [] : '')) : input.value;
     const message = validate(q, value);
 
     if (message) {
       errorEl.textContent = message;
       errorEl.classList.add('visible');
-      if (q.type !== 'multiselect') input.focus();
+      if (!isChoice) input.focus();
       return;
     }
 
-    if (q.type !== 'multiselect') answers[q.id] = value.trim();
+    if (!isChoice) answers[q.id] = value.trim();
     currentStep += 1;
 
     if (currentStep === flow.questions.length) {
@@ -385,18 +427,26 @@
     const formatted = {};
 
     Object.entries(answers).forEach(([key, value]) => {
-      if (!Array.isArray(value)) {
-        formatted[key] = value;
-        return;
-      }
       const q = flow.questions.find((item) => item.id === key);
       const options = (q && q.options) || [];
-      formatted[key] = value
-        .map((id) => {
-          const opt = options.find((o) => o.id === id);
-          return opt ? opt.label.en : id;
-        })
-        .join(', ');
+
+      if (Array.isArray(value)) {
+        formatted[key] = value
+          .map((id) => {
+            const opt = options.find((o) => o.id === id);
+            return opt ? opt.label.en : id;
+          })
+          .join(', ');
+        return;
+      }
+
+      if (q && q.type === 'select') {
+        const opt = options.find((o) => o.id === value);
+        formatted[key] = opt ? opt.label.en : value;
+        return;
+      }
+
+      formatted[key] = value;
     });
 
     return {
