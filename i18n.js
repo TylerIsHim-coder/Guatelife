@@ -22,7 +22,7 @@
       'hero.title': `Bridging and empowering students<br class="hidden md:block" /> to a world of possibilities.`,
       'hero.subtitle': `We pair ambitious students in Guatemala with the mentors and resources to turn potential into reality.`,
 
-      'trust.heading': `Our partners, for building the world's best learning resources`,
+      'trust.heading': `Building on the world's best learning resources and partners`,
 
       'mission.eyebrow': `Our mission`,
       'mission.heading': `Talent is universal.<br />\n<span class="italic text-muted">Opportunity is not.</span>`,
@@ -130,7 +130,7 @@
       'hero.title': `Conectando y empoderando a los estudiantes<br class="hidden md:block" /> hacia un mundo de posibilidades.`,
       'hero.subtitle': `Conectamos a estudiantes con ambición en Guatemala con los mentores y recursos para convertir su potencial en realidad.`,
 
-      'trust.heading': `Construimos sobre los mejores recursos educativos del mundo`,
+      'trust.heading': `Construimos sobre los mejores recursos educativos y socios del mundo`,
 
       'mission.eyebrow': `Nuestra misión`,
       'mission.heading': `El talento es universal.<br />\n<span class="italic text-muted">Las oportunidades no.</span>`,
